@@ -125,7 +125,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
@@ -141,10 +141,5 @@
           cp "$(TargetPath)" "$(SolutionDir)console/bin/$(ConfigurationName)/"
       fi
     </PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>
-      if not "$(ConfigurationName)" == "Build" xcopy /Y "$(TargetPath)" "$(SolutionDir)console\bin\$(ConfigurationName)\"
-</PostBuildEvent>
   </PropertyGroup>
 </Project>

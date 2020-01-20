@@ -454,6 +454,8 @@ namespace ThoughtWorks.CruiseControl.Core.Sourcecontrol
         /// <summary>
         /// Setup the local repository with some required config settings.
         /// 
+		/// Always:
+		/// - 
         /// For tagging:
         /// - User name
         /// - User e-mail
@@ -461,6 +463,9 @@ namespace ThoughtWorks.CruiseControl.Core.Sourcecontrol
         /// <param name="result">IIntegrationResult of the current build.</param>
         private void SetupLocalRepository(IIntegrationResult result)
         {
+
+			GitConfigSet("remote.origin.url", Repository, result);
+
             if (!string.IsNullOrEmpty(CommitterName) && !string.IsNullOrEmpty(CommitterEMail))
             {
                 GitConfigSet("user.name", CommitterName, result);
@@ -617,10 +622,14 @@ namespace ThoughtWorks.CruiseControl.Core.Sourcecontrol
         {
             ProcessArgumentBuilder buffer = new ProcessArgumentBuilder();
             buffer.AddArgument("fetch");
-            buffer.AddArgument("origin");
+			buffer.AddArgument("--tags");
+			buffer.AddArgument("--force");
+			buffer.AddArgument("--progress");
+			buffer.AddArgument("origin");
+			buffer.AddArgument("+refs/heads/*:refs/remotes/origin/*");
 
-            // initialize progress information
-            var bpi = GetBuildProgressInformation(result);
+			// initialize progress information
+			var bpi = GetBuildProgressInformation(result);
             bpi.SignalStartRunTask(string.Concat("git ", buffer.ToString()));
 
             // enable Stdout monitoring
@@ -632,12 +641,12 @@ namespace ThoughtWorks.CruiseControl.Core.Sourcecontrol
             ProcessExecutor.ProcessOutput -= ProcessExecutor_ProcessOutput;
         }
 
-        /// <summary>
-        /// Checkout a remote branch with the "git checkout -q -f 'origin/branchName'" command.
-        /// </summary>
-        /// <param name="branchName">Name of the branch to checkout.</param>
-        /// <param name="result">IIntegrationResult of the current build.</param>
-        private void GitCheckoutRemoteBranch(string branchName, IIntegrationResult result)
+		/// <summary>
+		/// Checkout a remote branch with the "git checkout -q -f 'origin/branchName'" command.
+		/// </summary>
+		/// <param name="branchName">Name of the branch to checkout.</param>
+		/// <param name="result">IIntegrationResult of the current build.</param>
+		private void GitCheckoutRemoteBranch(string branchName, IIntegrationResult result)
         {
             ProcessArgumentBuilder buffer = new ProcessArgumentBuilder();
             buffer.AddArgument("checkout");
